@@ -1,0 +1,223 @@
+<div class="row heading-name-area">
+
+    <div class="col-sm-9 ">
+        <h4 class="main-heading"><u>Infeed Report</u></h4>
+    </div>
+    <div class="col-sm-3">
+        <button class="btn btn-secondary float-end" data-bs-toggle="collapse" data-bs-target="#infeedReportFilter"
+            aria-expanded="false" aria-controls="reportFilter"><i class="bi bi-funnel"></i>
+            Filter
+        </button>
+        <button class="btn btn-outline-success float-end mx-1" (click)="generateInfeedRunTimeExcelReport()"><img
+                class="float-end mx-1" style="width: 20px; height: 20px;" src="assets/images/excel-1.png"
+                alt="excel">Download</button>
+        
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="centered">
+
+        <section class="cards">
+        </section>
+    </div>
+
+    <hr>
+
+</div>
+
+<!--FILTER -->
+<div class="collapse" id="infeedReportFilter">
+    <form #infeedFilterForm="ngForm" (ngSubmit)="fetchInfeedMissionRuntimeDetailsByFilters()"
+        name="infeedFilterForm">
+
+        <div class="row">
+            
+            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">Start Date</label>
+                <input type="date" id="startdatepicker" name="missionRuntimeInfeedStartDate"
+                    [(ngModel)]="missionRuntimeInfeedStartDate" class="form-control" (input)="dateTimeValidation()">
+                <div *ngIf="missionRuntimeInfeedStartDate>missionRuntimeInfeedEndDate" class="error">
+                    <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i> Start-date should be less than
+                        end-date.
+                    </p>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
+                <label class="startTime">Start Time</label>
+                <input type="time" id="missionRuntimeInfeedStartTime" name="missionRuntimeInfeedStartTime"
+                    [(ngModel)]="missionRuntimeInfeedStartTime"  class="form-control"
+                    (input)="dateTimeValidation()">
+                    
+                    
+            
+
+                    
+                    
+                
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">End Date</label>
+                <input type="date" id="enddatepicker" name="missionRuntimeInfeedEndDate"
+                    [(ngModel)]="missionRuntimeInfeedEndDate" [disabled]="disableDateTime" class="form-control"
+                    (input)="dateTimeValidation()">
+                <div *ngIf="missionRuntimeInfeedStartDate>missionRuntimeInfeedEndDate" class="error">
+                    <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i> End-date should be greater than
+                        Start-date.
+                    </p>
+                </div>
+            </div>
+           
+            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">End Time</label>
+                <input type="time" id="enddatepicker" name="missionRuntimeInfeedEndTime"
+                    [(ngModel)]="missionRuntimeInfeedEndTime" class="form-control"
+                    (input)="dateTimeValidation()">
+            </div>
+            <div class="col-md-2 mt-1">
+                <label class="control-label">Product name</label>
+                <select name="productName" id="productNameId" [(ngModel)]="productName" class="form-select"
+                    #selectedProductValue="ngModel"(change)="selectProductNameChangeHandler(selectedProductValue.value)">
+                    <option value="" disabled selected>Product Name</option>
+                    <option *ngFor="let productNameDetails of productNameDropDownList"[ngValue]="productNameDetails.productName">
+                        {{productNameDetails.productName}}</option>
+                </select>
+            </div>
+           
+
+            <div class="col-md-2 mt-1">
+                <label class="control-label">Status</label>
+                <select name="missionRuntimeInfeedStatus" id="missionRuntimeInfeedStatus" #missionRuntimeInfeedStatusRef="ngModel"
+                    [(ngModel)]="missionRuntimeInfeedStatus"
+                    (change)="selectMissionRuntimeInfeedStatusChangeHandler(missionRuntimeInfeedStatusRef.value)" class="form-select">
+                    <option value="" disabled selected></option>
+                    <option value="READY">READY</option>
+                    <option value="IN PROGRESS">IN PROGRESS</option>
+                    <option value="COMPLETED">COMPLETED</option>
+                </select>
+            </div>
+
+
+            <div class="col-md-2 mt-1">
+                <label class="control-label"> Sku Code</label>
+                <select name="skuCode" id="skuCodeId" [(ngModel)]="skuCode" class="form-select"
+                    #selectedSkuCodeValue="ngModel"
+                    (change)="selectSkuCodeChangeHandler(selectedSkuCodeValue.value)">
+                    <option value="" disabled selected></option>
+                    
+                
+                </select>
+            </div>
+
+            
+            
+                <div class="col-md-2 mt-1 ">
+                    <label class="control-label">Batch Number</label>
+                    <input class="form-control" type="text" name="batchNumber" id="batchNumber" [(ngModel)]="batchNumber">
+                </div>
+
+                
+           
+            
+            <div class="col-md-2 mt-1">
+                <label class="control-label">Floor Name</label>
+                <select name="floorName" id="floorName" [(ngModel)]="floorName" class="form-select"
+                    #selectedFloorValue="ngModel" (change)="selectFloorChangeHandler(selectedFloorValue.value)">
+                    <option value="" disabled selected>Select Floor Name</option>
+                    <option *ngFor="let floorList of floorDropDownList" [ngValue]="floorList.floorName">
+                        {{floorList.floorName}}</option>
+                </select>
+            </div>
+            
+
+            <div class="col-md-2 mt-1">
+                <label class="control-label">Area Name</label>
+                <select name="areaName" id="areaName" [(ngModel)]="areaName" class="form-select"
+                    #selectedAreaValueRef="ngModel" (change)="selectAreaChangeHandler(selectedAreaValueRef.value)">
+                    <option value="" disabled selected>Select Area Name</option>
+                    <option *ngFor="let areaList of areaDropDownList" [ngValue]="areaList.areaName">
+                        {{areaList.areaName}}</option> 
+                </select>
+            </div>
+    
+
+
+            <div class="col-md-4 mt-1">
+                <h5 class="mt-4 "></h5>
+                <button class="btn btn-success " type="submit" [disabled]="disableSearchButton"><i
+                        class="fa fa-search"></i>Search</button>
+                <button class="btn btn-secondary mx-2" type="reset" value="submit" (input)="resetData()"
+                    (click)="fetchAllInfeedMissionRuntimeDetails()"><i class="fa fa-eraser"></i>
+                    Reset</button>
+            </div>
+
+          
+        </div>
+ 
+           
+
+        
+    </form>
+</div>
+
+<!-- TABLE SECTION -->
+
+
+<div class="row table-area">
+    <div class="col">
+
+
+        <div id="table">
+            <table datatable [dtOptions]="infeedMissionReportDtOptions" id="infeedMissionRuntimeDetailsId"
+                class="table-responsive-sm   table-bordered table stripe">
+                <thead>
+
+                    <tr>
+                        <th class="th-sm">Sr No</th>
+                        <th class="th-sm">Mission</th>
+                        <th class="th-sm"> Pallet Code</th>
+                        <th class="th-sm">Sku Code</th>
+                        <th class="th-sm">Sku Name</th>
+                        <th class="th-sm"> Product Name</th>
+                        <th class="th-sm"> PO No.</th>
+                        <th class="th-sm">Batch No</th>
+                        <th class="th-sm">Quantity</th>
+                        <th class="th-sm">Floor Name</th>
+                        <th class="th-sm">Area Name</th>
+                        <th class="th-sm">Rack Name</th>
+                        <th class="th-sm">Position Id</th>
+                        <th class="th-sm">Status</th>
+                        <th class="th-sm">Start Date</th>
+                        <th class="th-sm">End Date</th>
+                        <th class="th-sm">Start Time</th>
+                        <th class="th-sm">End Time</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let infeedMissionDetails of infeedMissionRuntimeDetailsList; index as i">
+                        <td>{{i+1}}</td>
+                        <td>{{infeedMissionDetails.missionRouteId}}</td>
+                        <td>{{infeedMissionDetails.palletCode}}</td>
+                        <td>{{infeedMissionDetails.skuCode}}</td>
+                        <td>{{infeedMissionDetails.skuName}}</td>
+                        <td>{{infeedMissionDetails.productName}}</td>
+                        <td>{{infeedMissionDetails.prodOrderNo}}</td>
+                        <td>{{infeedMissionDetails.batchNo}}</td>
+                        <td>{{infeedMissionDetails.quantity}}</td>
+                        <td>{{infeedMissionDetails.floorName}}</td>
+                        <td>{{infeedMissionDetails.areaName}}</td>
+                        <td>{{infeedMissionDetails.rackName}}</td>
+                        <td>{{infeedMissionDetails.positionId}}</td>
+                        <td>{{infeedMissionDetails.missionRuntimeInfeedStatus}}</td>
+                         <td>{{infeedMissionDetails.missionRuntimeInfeedStartDate}}</td> 
+                        <td>{{infeedMissionDetails.missionRuntimeInfeedEndDate}}</td>
+                        <td>{{infeedMissionDetails.missionRuntimeInfeedStartTime}}</td>
+                        <td>{{infeedMissionDetails.missionRuntimeInfeedEndTime}}</td>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
