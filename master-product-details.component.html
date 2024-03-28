@@ -1,0 +1,461 @@
+<!-- MASTER HEADER SECTION -->
+<div class="row heading-name-area">
+  <div class="col-sm-8 col-md-9 col-lg-10">
+    <h4 class="main-heading"><u>Master Product Details</u></h4>
+  </div>
+
+  <div class="col-sm-4 col-md-3 col-lg-2">
+    <button type="button" class="btn btn-primary float-end add-product-button" data-bs-toggle="modal"
+      data-bs-target="#addProductModal"><i class="bi bi-plus-square"></i></button>
+  </div>
+</div>
+<!-- <hr> style="color: rgb(24, 24, 140);" -->
+
+
+<!-- TABLE SECTION -->
+<div class="row table-area">
+  <div class="col">
+    <div id="table">
+      <table datatable [dtOptions]="productDtOption" id="prodId"
+        class="table-responsive-sm   table-bordered table stripe">
+        <thead>
+          <tr>
+            <th class="th-sm">Sr No</th>
+            <th class="th-sm">Product Name</th>
+            <th class="th-sm">Product Description</th>
+            <!-- <th class="th-sm">Product CDate</th>
+            <th class="th-sm">Product CTime</th>
+            <th class="th-sm">Product MDate</th>
+            <th class="th-sm">Product MTime</th> -->
+            <th class="th-sm">IsDeleted</th>
+            <th class="th-sm">Dispatch Sequence</th>
+            <th class="th-sm">Actions</th>
+            <!-- <th class="th-sm">Product Created Date Time</th>
+            <th class="th-sm">Product Created By User Name</th>
+            <th class="th-sm">Actions</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let productDetails of masterProductDetailsTableList; index as i">
+            <td>{{i+1}}</td>
+            <td>{{productDetails.productName}}</td>
+            <td>{{productDetails.productDescription}}</td>
+            <!-- <td>{{productDetails.productCdate}}</td>
+            <td>{{productDetails.productCtime}}</td>
+            <td>{{productDetails.productMtime}}</td>
+            <td>{{productDetails.productMdate}}</td> -->
+            <td>{{productDetails.productIsDeleted}}</td>
+            <td>{{productDetails.productDispatchSequence}}</td>
+            <!-- <td> {{productDetails.productCDateTime}}</td>
+            <td>{{productDetails.productCreatedByUserName}}</td> -->
+
+            <td><button type="button" class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal"
+                data-bs-target="#updateProductModal" (click)="editMasterProductRow(productDetails)"><i
+                  class="bi bi-pencil-square"></i>
+              </button>
+              <button type="button" class="btn btn-danger btn-sm delete-button" data-bs-toggle="modal"
+                data-bs-target="#deleteProductModal" (click)="deleteMasterProductDetailsRow(productDetails)"><i
+                  class="bi bi-trash3 "></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal window 2 to delete the data into table Called on Button=> Delete -->
+<div class="modal fade" id="deleteProductModal">
+  <form #deleteProductDetailsModalForm="ngForm" (ngSubmit)="deleteMasterProductDetails()">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <i class="bi bi-exclamation-triangle"></i> -->
+        <h4 class="modal-title "><i class="bi bi-trash3"></i> Delete Product :
+          "{{deleteProductDetailsForSelectedIdInstance.productName}}"
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" type="submit" data-bs-toggle="modal"
+                      [disabled]="!deleteProductDetailsModalForm.valid">Delete</button>
+        <!-- (click)="deleteMasterProductDetails()"  it is removed from above line -->
+        <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+
+
+
+<!-- Modal window 2 to insert the data into table Called on Button=> Add-->
+<div class="modal" id="addProductModal" method="get">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <div class="row">
+          <h4 class="modal-title"><i class="bi bi-plus-square"></i> Add New Product Details</h4>
+        </div>
+
+      </div>
+      <div class="modal-body">
+        <form #addProductDetailsModalForm="ngForm" (ngSubmit)="addMasterProductDetails(addProductDetailsModalForm)"
+          nonvalidate>
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Name </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductNameId" name="addProductName" required #addProductNameRef="ngModel"
+                [(ngModel)]="addProductDetailsInstance.productName">
+              <div *ngIf="!addProductNameRef.valid &&(addProductNameRef.dirty || addProductNameRef.touched)"
+                class="error">
+                <div *ngIf="addProductNameRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product Name
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Description</p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductDescId" name="addProductDescName" #addProductDescRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productDescription">
+              <div *ngIf="!addProductDescRef.valid &&(addProductDescRef.dirty || addProductDescRef.touched)"
+                class="error">
+                <div *ngIf="addProductDescRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    Description</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-5">
+              <p class="required">Product CDate </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductCDateId" name="addProductCDateName" #addProductCDateRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productCdate">
+              <div *ngIf="!addProductCDateRef.valid &&(addProductCDateRef.dirty || addProductCDateRef.touched)"
+                class="error">
+                <div *ngIf="addProductCDateRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    CDate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product CTime </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductCTimeId" name="addProductCTimeName" #addProductCTimeRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productCtime">
+              <div *ngIf="!addProductCTimeRef.valid &&(addProductCTimeRef.dirty || addProductCTimeRef.touched)"
+                class="error">
+                <div *ngIf="addProductCTimeRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    CTime</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product MDate </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductMDateId" name="addProductMDateName" #addProductMDateRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productMdate">
+              <div *ngIf="!addProductMDateRef.valid &&(addProductMDateRef.dirty || addProductMDateRef.touched)"
+                class="error">
+                <div *ngIf="addProductMDateRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    MDate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product MTime </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductMTimeId" name="addProductMTimeName" #addProductMTimeRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productMtime">
+              <div *ngIf="!addProductMTimeRef.valid &&(addProductMTimeRef.dirty || addProductMTimeRef.touched)"
+                class="error">
+                <div *ngIf="addProductMTimeRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    MTime</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Is Deleted </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductIsDeletedId" name="addProductIsDeletedName" #addProductIsDeletedRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productIsDeleted">
+              <div *ngIf="!addProductDispatchSequenceRef.valid &&(addProductIsDeletedRef.dirty || addProductIsDeletedRef.touched)"
+                class="error">
+                <div *ngIf="addProductIsDeletedRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    Deleted</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Dispatch Sequence </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="addProductDispatchSequenceId" name="addProductDispatchSequenceName" #addProductDispatchSequenceRef="ngModel" required
+                [(ngModel)]="addProductDetailsInstance.productDispatchSequence">
+              <div *ngIf="!addProductDispatchSequenceRef.valid &&(addProductDispatchSequenceRef.dirty || addProductDispatchSequenceRef.touched)"
+                class="error">
+                <div *ngIf="addProductDispatchSequenceRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    Dispatch Sequence</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+ -->
+
+          <div class="modal-footer">
+            <button class="btn btn-success" type="submit" data-bs-dismiss="modal"
+              [disabled]="!addProductDetailsModalForm.valid">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal window 2 to update the data into table Called on Button=> Update-->
+<div class="modal" id="updateProductModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="row">
+          <h4 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Product Details :</h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form #editProductDetailsModalForm="ngForm" (ngSubmit)="editMasterProductDetails()">
+          <!-- (ngSubmit)="editMasterProductDetails()" nonvalidate> -->
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Name </p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="editproductNameId" name="editproductName" #editProductNameRef="ngModel" required
+                [(ngModel)]="editProductDetailsForSelectedIdInstance.productName" readonly="true" disabled="true">
+
+              <div *ngIf="!editProductNameRef.valid &&(editProductNameRef.dirty || editProductNameRef.touched)"
+                class="error">
+                <div *ngIf="editProductNameRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i> Please Enter Product
+                    Name
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-5">
+              <p class="required">Product Desc</p>
+            </div>
+            <div class="col-7">
+              <input type="text" id="editProductDescId" name="editProductDescName" #editProductDescRef="ngModel"
+                required [(ngModel)]="editProductDetailsForSelectedIdInstance.productDescription">
+              <div *ngIf="!editProductDescRef.valid &&(editProductDescRef.dirty || editProductDescRef.touched)"
+                class="error">
+                <div *ngIf="editProductDescRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Please Enter Product
+                    Description</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Modal footer data-bs-target="#passwordProtectedOnEditProductDetailsModal"-->
+          <div class="modal-footer">
+            <button class="btn btn-success" type="submit" data-bs-toggle="modal"
+              
+              [disabled]="!editProductDetailsModalForm.valid">Update</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- add password protection for edit -->
+<div class="modal" id="passwordProtectedOnEditProductDetailsModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="bi bi-pencil-square"></i>User Password </h4>
+
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form #passwordCheckForm="ngForm" name="password"
+          (ngSubmit)="checkLoginUserPassword(passwordCheckForm,userPasswordRef.value)">
+
+          <div class="row">
+            <div class="col-4">
+              <p class="required">Enter Password </p>
+            </div>
+            <div class="col-6">
+              <input class="input-field" [type]="show ? 'text' : 'password'" [(ngModel)]="password" name="password"
+                id="passwordId" placeholder="Password..." #userPasswordRef="ngModel" required>
+
+
+              <!-- <div *ngIf="userPasswordRef.errors?.['pattern'] ">
+                <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Password length
+                    should be 6-16
+                    characters </p>
+            </div> -->
+
+              <div *ngIf="!userPasswordRef.valid &&(userPasswordRef.dirty || userPasswordRef.touched)" class="error">
+                <div *ngIf="userPasswordRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>
+                    Please Enter User Password</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-6">
+              <input type="checkbox" (click)="passwordShow()"> Show
+
+            </div>
+
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+
+            <button class="btn btn-success" type="submit" data-bs-dismiss="modal"
+              [disabled]="!passwordCheckForm.valid">Submit</button>
+            <!-- <button class="btn btn-success" type="button" data-bs-dismiss="modal"
+              (click)="checkLoginUserPassword(userPasswordRef.value)">Submit</button> -->
+
+
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- add password protection for delete -->
+<div class="modal" id="passwordProtectedOnDeleteProductDetailsModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="bi bi-pencil-square"></i>User Password </h4>
+
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form #passwordCheckForm1="ngForm" name="password"
+          (ngSubmit)="checkLoginUserPasswordForDelete(passwordCheckForm1,userPasswordRef.value)">
+
+          <div class="row">
+            <div class="col-4">
+              <p class="required">Enter Password </p>
+            </div>
+            <div class="col-6">
+              <input class="input-field" [type]="show ? 'text' : 'password'" [(ngModel)]="password" name="password"
+                id="passwordId1" placeholder="Password..." #userPasswordRef="ngModel" required>
+
+
+              <!-- <div *ngIf="userPasswordRef.errors?.['pattern'] ">
+                <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>Password length
+                    should be 6-16
+                    characters </p>
+              </div> -->
+
+              <div *ngIf="!userPasswordRef.valid &&(userPasswordRef.dirty || userPasswordRef.touched)" class="error">
+                <div *ngIf="userPasswordRef.errors?.['required']">
+                  <p class="text-danger"><i class="bi bi-exclamation-circle-fill"></i>
+                    Please Enter User Password</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-6">
+              <input type="checkbox" (click)="passwordShow()"> Show
+
+            </div>
+
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+
+            <button class="btn btn-success" type="submit" data-bs-dismiss="modal"
+              [disabled]="!passwordCheckForm.valid">Submit</button>
+            <!-- <button class="btn btn-success" type="button" data-bs-dismiss="modal"
+              (click)="checkLoginUserPassword(userPasswordRef.value)">Submit</button> -->
+
+
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
